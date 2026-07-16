@@ -1,7 +1,21 @@
 "SISTEMA DE BIBLIOTEA"
 "POR:D3R1OS"
 
+import json
+
 libros=[]
+
+def guardar_libros():
+    with open("libros.json", "w", encoding="utf-8") as archivo:
+        json.dump(libros, archivo, indent=4, ensure_ascii=False)
+
+def cargar_libros():
+    global libros
+    try:
+        with open("libros.json", "r", encoding="utf-8") as archivo:
+            libros = json.load(archivo)
+    except FileNotFoundError:
+        libros = []
 
 def agregar_libros():
     while True:
@@ -28,10 +42,12 @@ def agregar_libros():
             print("Intorduzca un número valido")
             continue
 
-        libros.append({"nombre": nombre, "autor": autor,"año": año})
+        libros.append({"nombre": nombre, "autor": autor, "año": año})
+        guardar_libros()
         seguir = input("Desea seguir? S/N")
         if seguir.lower() != "s":
             break
+
 
 def eliminar_libros():
     global libros
@@ -43,8 +59,11 @@ def eliminar_libros():
     cantidad_antes = len(libros)
     
     libros = [libro for libro in libros if libro["nombre"] != nombre_b]
+    guardar_libros() 
     
     cantidad_despues = len(libros)
+
+    
 
     if cantidad_antes == cantidad_despues:
         print("No se encontro ninugn libro con ese nombre")
@@ -105,6 +124,8 @@ def buscar_por_año():
             print(f"    Autor: {libro['autor']} - Año: {libro['año']}")
     else:
         print("No existe el libro que buscas en la biblioteca")
+
+cargar_libros()
 
 while True:
     print("MENU DE BIBLIOTECA")
