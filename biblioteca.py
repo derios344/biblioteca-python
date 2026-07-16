@@ -42,6 +42,11 @@ def agregar_libros():
             print("Intorduzca un número valido")
             continue
 
+        duplicado = any(libro["nombre"].lower() == nombre.lower() for libro in libros)
+        if duplicado:
+            print("El libro ya existe en la biblioteca")
+            continue
+
         libros.append({"nombre": nombre, "autor": autor, "año": año})
         guardar_libros()
         seguir = input("Desea seguir? S/N")
@@ -58,7 +63,7 @@ def eliminar_libros():
     
     cantidad_antes = len(libros)
     
-    libros = [libro for libro in libros if libro["nombre"] != nombre_b]
+    libros = [libro for libro in libros if libro["nombre"].lower() != nombre_b.lower()]
     guardar_libros() 
     
     cantidad_despues = len(libros)
@@ -78,17 +83,17 @@ def mostrar_libros():
         print("No hay libros")
         print("")
     else:
-        print("Lista de libros")
-        print("")
-        for i, libro in enumerate(libros, start=1):
+        libros_ordenados = sorted(libros, key=lambda libro: libro["nombre"])
+
+        print("Lista de libros:")
+        for i, libro in enumerate(libros_ordenados, start=1):
             print(f"{i}. {libro['nombre']}")
             print(f"    Autor: {libro['autor']} - Año: {libro['año']}")
             print("")
 
-
 def buscar_por_nombre():
     nombre_buscado = input("Introduzca el nombre del libro que quiera enocontrar: ")
-    resultado = [libro for libro in libros if libro["nombre"] == nombre_buscado]
+    resultado = [libro for libro in libros if libro["nombre"].lower() == nombre_buscado.lower()]
     if resultado:
         for i, libro in enumerate(resultado, start=1):
             print(f"{i}. {libro['nombre']}")
@@ -125,6 +130,43 @@ def buscar_por_año():
     else:
         print("No existe el libro que buscas en la biblioteca")
 
+def editar_libro():
+    nombre_buscado = input("Introduzca el nombre del libro que quiere editar: ")
+    
+    indice_encontrado = None
+    
+    for i, libro in enumerate(libros):
+        if libro["nombre"].lower() == nombre_buscado.lower():
+            indice_encontrado = i
+            break
+
+    if indice_encontrado is None:
+        print("No existe el libro que buscas en la biblioteca")
+        return
+
+    print(f"Editando: {libros[indice_encontrado]['nombre']}")
+    print("Dejá el campo vacío si no querés cambiarlo")
+    print("")
+
+    nuevo_nombre = input("Nuevo nombre: ")
+    nuevo_autor = input("Nuevo autor: ")
+    nuevo_año_str = input("Nuevo año: ")
+
+    if nuevo_nombre != "":
+        libros[indice_encontrado]["nombre"] = nuevo_nombre
+
+    if nuevo_autor != "":
+        libros[indice_encontrado]["autor"] = nuevo_autor
+
+    if nuevo_año_str != "":
+        try:
+            libros[indice_encontrado]["año"] = int(nuevo_año_str)
+        except ValueError:
+            print("El año no era válido, se mantuvo el anterior")
+
+    guardar_libros()
+    print("Libro actualizado con éxito")
+
 cargar_libros()
 
 while True:
@@ -135,7 +177,8 @@ while True:
     print("4- Buscar libro por nombre")
     print("5- Buscar libro por autor")
     print("6- Buscar libro por año")
-    print("7- Salir")
+    print("7- Editar libro")
+    print("8- Salir")
 
     opcion = input("Elije una opcion: ")
 
@@ -152,6 +195,8 @@ while True:
     elif opcion == "6":
         buscar_por_año()
     elif opcion == "7":
+        editar_libro()
+    elif opcion == "8":
         print("Adioos")
         break
     else:
