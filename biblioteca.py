@@ -1,3 +1,12 @@
+"""
+Sistema de bibloteca
+
+Autor: D3R1OS
+
+Descripción:
+    Este programa permite crear y gestionar una biblioteca de libros. Se pueden crear bibliotecas, agregar libros a ellas, mostrar los libros disponibles, marcar libros como leídos, eliminar libros y eliminar bibliotecas completas.
+"""
+
 class Libro:
     def __init__(self, titulo, autor, paginas, leido=False):
         self.titulo = titulo

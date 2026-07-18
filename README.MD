@@ -1,101 +1,77 @@
-# Sistema de Biblioteca en Python
+# Sistema de Gestión Multi-Biblioteca en Python
 
-Aplicación de consola desarrollada en Python para gestionar una biblioteca de libros.
+Aplicación de consola desarrollada en Python que utiliza el paradigma de **Programación Orientada a Objetos (POO)** para gestionar múltiples bibliotecas de forma independiente.
 
-El programa permite agregar, modificar, eliminar y buscar libros, manteniendo los datos guardados de forma persistente mediante un archivo JSON.
+El programa permite organizar libros dentro de diferentes colecciones virtuales creadas por el usuario, controlando el total de páginas y el estado de lectura de cada volumen.
 
 ## Características
 
-- Agregar libros.
-- Mostrar todos los libros registrados.
-- Buscar libros por nombre.
-- Buscar libros por autor.
-- Buscar libros por año de publicación.
-- Editar información de libros.
-- Eliminar libros.
-- Evitar libros duplicados.
-- Ordenar la lista de libros.
-- Validar entradas del usuario.
-- Guardar los datos automáticamente.
-- Cargar los libros al iniciar el programa.
+- **Gestión Multi-Biblioteca:** Creación y eliminación de múltiples bibliotecas personalizadas por nombre.
+- **Modelado con Objetos:** Los libros y las bibliotecas están representados mediante clases independientes.
+- **Control de Lectura:** Capacidad de marcar libros específicos como "Leídos" o "No leídos".
+- **Estructura Detallada:** Registro de títulos, autores y contador físico de páginas por libro.
+- **Visualización Limpia:** Listado ordenado de las bibliotecas disponibles y los libros contenidos en cada una.
 
 ## Tecnologías utilizadas
 
-- Python 3.
-- JSON para almacenamiento de datos.
+- Python 3 (Enfoque nativo en POO, sin dependencias externas).
 
-## Estructura de un libro
+## Modelos de Datos
 
-Cada libro se almacena con la siguiente información:
+El sistema se basa en dos entidades principales interconectadas:
 
-```json
-{
-    "nombre": "El Principito",
-    "autor": "Antoine de Saint-Exupéry",
-    "año": 1943
-}
-```
+### 1. Clase Libro
+Representa un volumen individual con las propiedades:
+- `titulo` (Texto)
+- `autor` (Texto)
+- `paginas` (Entero)
+- `leido` (Booleano)
+
+### 2. Clase Biblioteca
+Actúa como contenedor y administrador, asociando un nombre único a una lista dinámica de objetos de tipo `Libro`.
+
+> ⚠️ **Nota de Persistencia:** En esta versión, los datos se administran directamente en la memoria RAM. Al cerrar la aplicación, las bibliotecas creadas se reiniciarán.
 
 ## Instalación
 
 Clonar el repositorio:
 
-```bash
-git clone git@github.com:derios344/biblioteca-python.git
-```
+    git clone git@github.com:derios344/biblioteca-python.git
 
 Entrar en la carpeta del proyecto:
 
-```bash
-cd biblioteca-python
-```
+    cd biblioteca-python
 
 Ejecutar el programa:
 
-```bash
-python biblioteca.py
-```
+    python biblioteca.py
 
 ## Uso
 
-Al iniciar el programa aparecerá un menú con las siguientes opciones:
+Al iniciar el programa, interactuarás con el sistema a través del siguiente menú interactivo en consola:
 
-```text
-1. Mostrar libros
-2. Agregar libro
-3. Eliminar libro
-4. Buscar libro por nombre
-5. Buscar libro por autor
-6. Buscar libro por año
-7. Editar libro
-8. Salir
-```
-
-Los libros se guardan automáticamente en:
-
-```text
-libros.json
-```
-
-Esto permite conservar la información aunque el programa sea cerrado.
+    Opciones:
+    1. Crear una biblioteca
+    2. Mostrar todas las bibliotecas
+    3. Crear un libro y agregarlo a la biblioteca
+    4. Mostrar todos los libros de la biblioteca
+    5. Marcar un libro como leído
+    6. Eliminar un libro
+    7. Eliminar una biblioteca
+    8. Salir
 
 ## Conceptos practicados
 
-Este proyecto fue realizado para practicar:
+Este rediseño fue ideal para profundizar en conceptos avanzados de desarrollo:
 
-- Funciones.
-- Listas.
-- Diccionarios.
-- Manejo de archivos.
-- Persistencia de datos con JSON.
-- Manejo de errores (`try/except`).
-- Comprensiones de listas.
-- Validación de datos.
-- Manipulación de estructuras de datos.
-
+- **Programación Orientada a Objetos (POO):** Definición de clases, instanciación de objetos, encapsulamiento de estados y métodos de comportamiento.
+- **Métodos Mágicos (Dunder Methods):** Implementación de `__str__` para representaciones en texto personalizadas y `__len__` para mapear el tamaño del libro a sus páginas.
+- **Estructuras de Datos Avanzadas:** Uso de diccionarios globales donde las llaves son strings y los valores son instancias complejas de otras clases.
+- **Lógica de Relaciones (1 a Muchos):** Asociación y paso de objetos (`Libro`) para ser almacenados dentro de los atributos de otra clase (`Biblioteca`).
+- **Validaciones Básicas:** Control del flujo del menú y chequeo de existencia de elementos previos.
 
 ## Autor
 
 D3R1OS
 
-Proyecto realizado como práctica de aprendizaje de Python y desarrollo de software.
+Proyecto enfocado en la transición hacia arquitecturas de software más escalables y limpias en Python.
