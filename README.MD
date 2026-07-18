@@ -36,7 +36,7 @@ Actúa como contenedor y administrador, asociando un nombre único a una lista d
 
 Clonar el repositorio:
 
-    git clone git@github.com:derios344/biblioteca-python.git
+    git clone  https://github.com/derios344/biblioteca-python.git
 
 Entrar en la carpeta del proyecto:
 
