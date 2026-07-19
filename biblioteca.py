@@ -4,8 +4,34 @@ Sistema de bibloteca
 Autor: D3R1OS
 
 Descripción:
-    Este programa permite crear y gestionar una biblioteca de libros. Se pueden crear bibliotecas, agregar libros a ellas, mostrar los libros disponibles, marcar libros como leídos, eliminar libros y eliminar bibliotecas completas.
+    Este programa permite crear y gestionar una biblioteca de libros. 
+    Se pueden crear bibliotecas, agregar libros a ellas, mostrar los libros disponibles, marcar libros como leídos, eliminar libros y eliminar bibliotecas completas.
 """
+
+import json
+import os
+
+ARCHIVO_DATOS = "biblioteca.json"
+
+
+def guardar_datos(nombre_archivo, bibliotecas):
+    datos = {nombre: biblioteca.to_dict() for nombre, biblioteca in bibliotecas.items()}
+    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+        json.dump(datos, archivo, indent=4, ensure_ascii=False)
+
+
+def cargar_datos(nombre_archivo):
+    if not os.path.exists(nombre_archivo):
+        return {}
+
+    with open(nombre_archivo, "r", encoding="utf-8") as archivo:
+        datos = json.load(archivo)
+
+    bibliotecas = {}
+    for nombre, biblioteca_data in datos.items():
+        bibliotecas[nombre] = Biblioteca.from_dict(biblioteca_data)
+    return bibliotecas
+
 
 class Libro:
     def __init__(self, titulo, autor, paginas, leido=False):
@@ -13,6 +39,23 @@ class Libro:
         self.autor = autor
         self.paginas = paginas
         self.leido = leido
+
+    def to_dict(self):
+        return {
+            "titulo": self.titulo,
+            "autor": self.autor,
+            "paginas": self.paginas,
+            "leido": self.leido,
+        }
+
+    @classmethod
+    def from_dict(cls, datos):
+        return cls(
+            datos["titulo"],
+            datos["autor"],
+            datos["paginas"],
+            datos.get("leido", False),
+        )
     
     def mostrar(self):
         print(f'Titulo: {self.titulo}')
@@ -72,10 +115,23 @@ class Biblioteca:
         print(f'No se encontró el libro "{titulo}" en la biblioteca.')
 
     def eliminar_biblioteca(self):
+        self.libros = []
         print(f'La biblioteca "{self.nombre}" ha sido eliminada.')
-    
 
-bibliotecas = {}
+    def to_dict(self):
+        return {
+            "nombre": self.nombre,
+            "libros": [libro.to_dict() for libro in self.libros],
+        }
+
+    @classmethod
+    def from_dict(cls, datos):
+        biblioteca = cls(datos["nombre"])
+        biblioteca.libros = [Libro.from_dict(libro_data) for libro_data in datos.get("libros", [])]
+        return biblioteca
+
+
+bibliotecas = cargar_datos(ARCHIVO_DATOS)
 
 while True:
     print("\nOpciones:")
@@ -96,6 +152,7 @@ while True:
             print(f"La biblioteca '{nombre_biblioteca}' ya existe.")
         else:
             bibliotecas[nombre_biblioteca] = Biblioteca(nombre_biblioteca)
+            guardar_datos(ARCHIVO_DATOS, bibliotecas)
             print(f'Se ha creado la biblioteca "{nombre_biblioteca}".')
     
     elif opcion == "2":
@@ -125,6 +182,7 @@ while True:
                 
                 nuevo_libro = Libro(titulo, autor, paginas, leido)
                 bibliotecas[biblioteca_elegida].agregar_libro(nuevo_libro)
+                guardar_datos(ARCHIVO_DATOS, bibliotecas)
             else:
                 print("La biblioteca especificada no existe.")
 
@@ -154,6 +212,8 @@ while True:
             biblioteca_elegida = input("Ingrese el nombre de la biblioteca: ")
             
             if biblioteca_elegida in bibliotecas:
+                print("Libros disponibles:")
+                bibliotecas[biblioteca_elegida].mostrar_libros()
                 titulo_libro = input("Ingrese el título del libro que desea marcar como leído: ")
                 libro_encontrado = None
                 for libro in bibliotecas[biblioteca_elegida].libros:
@@ -162,6 +222,7 @@ while True:
                         break
                 if libro_encontrado:
                     libro_encontrado.marcar_como_leido()
+                    guardar_datos(ARCHIVO_DATOS, bibliotecas)
                 else:
                     print("El libro especificado no se encuentra en la biblioteca.")
             else:
@@ -181,6 +242,7 @@ while True:
                 bibliotecas[biblioteca_elegida].mostrar_libros()
                 titulo_libro = input("Ingrese el título del libro que desea eliminar: ")
                 bibliotecas[biblioteca_elegida].eliminar_libro(titulo_libro)
+                guardar_datos(ARCHIVO_DATOS, bibliotecas)
             else:
                 print("La biblioteca especificada no existe.")
     
@@ -199,12 +261,14 @@ while True:
                 if confirmacion.lower() == 's':
                     bibliotecas[biblioteca_elegida].eliminar_biblioteca()
                     del bibliotecas[biblioteca_elegida]
+                    guardar_datos(ARCHIVO_DATOS, bibliotecas)
                 else:
                     print("Eliminación cancelada.")
             else:
                 print("La biblioteca especificada no existe.")
     
     elif opcion == "8":
+        guardar_datos(ARCHIVO_DATOS, bibliotecas)
         print("Saliendo del programa.")
         break
     

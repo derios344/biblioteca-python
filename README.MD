@@ -9,6 +9,7 @@ El programa permite organizar libros dentro de diferentes colecciones virtuales 
 - **Gestión Multi-Biblioteca:** Creación y eliminación de múltiples bibliotecas personalizadas por nombre.
 - **Modelado con Objetos:** Los libros y las bibliotecas están representados mediante clases independientes.
 - **Control de Lectura:** Capacidad de marcar libros específicos como "Leídos" o "No leídos".
+- **Persistencia con JSON:** El estado de las bibliotecas y libros se guarda automáticamente en `biblioteca.json`.
 - **Estructura Detallada:** Registro de títulos, autores y contador físico de páginas por libro.
 - **Visualización Limpia:** Listado ordenado de las bibliotecas disponibles y los libros contenidos en cada una.
 
@@ -30,7 +31,7 @@ Representa un volumen individual con las propiedades:
 ### 2. Clase Biblioteca
 Actúa como contenedor y administrador, asociando un nombre único a una lista dinámica de objetos de tipo `Libro`.
 
-> ⚠️ **Nota de Persistencia:** En esta versión, los datos se administran directamente en la memoria RAM. Al cerrar la aplicación, las bibliotecas creadas se reiniciarán.
+> ✅ **Nota de Persistencia:** En esta versión, los datos se guardan automáticamente en un archivo JSON (`biblioteca.json`). Al reiniciar la aplicación, las bibliotecas y sus libros se recuperan desde ese archivo.
 
 ## Instalación
 
