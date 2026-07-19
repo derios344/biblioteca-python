@@ -31,13 +31,13 @@ Representa un volumen individual con las propiedades:
 ### 2. Clase Biblioteca
 Actúa como contenedor y administrador, asociando un nombre único a una lista dinámica de objetos de tipo `Libro`.
 
-> ✅ **Nota de Persistencia:** En esta versión, los datos se guardan automáticamente en un archivo JSON (`biblioteca.json`). Al reiniciar la aplicación, las bibliotecas y sus libros se recuperan desde ese archivo.
+> **Nota de Persistencia:** En esta versión, los datos se guardan automáticamente en un archivo JSON (`biblioteca.json`). Al reiniciar la aplicación, las bibliotecas y sus libros se recuperan desde ese archivo.
 
 ## Instalación
 
 Clonar el repositorio:
 
-    git clone  https://github.com/derios344/biblioteca-python.git
+    git clone git@github.com:derios344/biblioteca-python.git
 
 Entrar en la carpeta del proyecto:
 

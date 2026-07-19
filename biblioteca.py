@@ -33,6 +33,36 @@ def cargar_datos(nombre_archivo):
     return bibliotecas
 
 
+def mostrar_bibliotecas(bibliotecas):
+    if not bibliotecas:
+        print("No hay bibliotecas creadas.")
+        return False
+
+    print("Bibliotecas disponibles:")
+    for nombre in bibliotecas.keys():
+        print(f'- {nombre}')
+    return True
+
+
+def seleccionar_biblioteca(bibliotecas, mensaje="Ingrese el nombre de la biblioteca: "):
+    if not mostrar_bibliotecas(bibliotecas):
+        return None
+
+    nombre = input(mensaje)
+    if nombre in bibliotecas:
+        return nombre
+
+    print("La biblioteca especificada no existe.")
+    return None
+
+
+def mostrar_libros_de_biblioteca(bibliotecas, nombre):
+    if nombre in bibliotecas:
+        bibliotecas[nombre].mostrar_libros()
+    else:
+        print("La biblioteca especificada no existe.")
+
+
 class Libro:
     def __init__(self, titulo, autor, paginas, leido=False):
         self.titulo = titulo
@@ -92,7 +122,7 @@ class Biblioteca:
 
     def mostrar_nombre(self):
         return self.nombre
-    
+
     def agregar_libro(self, libro):
         self.libros.append(libro)
         print(f'El libro "{libro.titulo}" ha sido agregado a la biblioteca.')
@@ -117,6 +147,12 @@ class Biblioteca:
     def eliminar_biblioteca(self):
         self.libros = []
         print(f'La biblioteca "{self.nombre}" ha sido eliminada.')
+
+    def buscar_libro(self, titulo):
+        for libro in self.libros:
+            if libro.titulo == titulo:
+                return libro
+        return None
 
     def to_dict(self):
         return {
@@ -156,107 +192,66 @@ while True:
             print(f'Se ha creado la biblioteca "{nombre_biblioteca}".')
     
     elif opcion == "2":
-        if not bibliotecas:
-            print("No hay bibliotecas creadas.")
-        else:
-            print("\nBibliotecas disponibles:")
-            for nombre in bibliotecas.keys():
-                print(f'- {nombre}')
+        mostrar_bibliotecas(bibliotecas)
     
     elif opcion == "3":
         if not bibliotecas:
             print("No hay bibliotecas creadas. Cree una primero.")
         else:
-            print("Bibliotecas disponibles:")
-            for nombre in bibliotecas.keys():
-                print(f'- {nombre}')
-            
-            biblioteca_elegida = input("Ingrese el nombre de la biblioteca: ")
-            
-            if biblioteca_elegida in bibliotecas:
+            biblioteca_elegida = seleccionar_biblioteca(bibliotecas)
+            if biblioteca_elegida:
                 titulo = input("Ingrese el título del libro: ")
                 autor = input("Ingrese el autor del libro: ")
-                paginas = int(input("Ingrese el número de páginas del libro: "))
+                try:
+                    paginas = int(input("Ingrese el número de páginas del libro: "))
+                except ValueError:
+                    print("Número de páginas inválido. Debe ser un número entero.")
+                    continue
                 leido_input = input("¿Ha leído el libro? (s/n): ")
                 leido = leido_input.lower() == 's'
                 
                 nuevo_libro = Libro(titulo, autor, paginas, leido)
                 bibliotecas[biblioteca_elegida].agregar_libro(nuevo_libro)
                 guardar_datos(ARCHIVO_DATOS, bibliotecas)
-            else:
-                print("La biblioteca especificada no existe.")
 
     elif opcion == "4":
-        if not bibliotecas:
-            print("No hay bibliotecas creadas.")
-        else:
-            print("Bibliotecas disponibles:")
-            for nombre in bibliotecas.keys():
-                print(f'- {nombre}')
-            
-            biblioteca_elegida = input("Ingrese el nombre de la biblioteca que desea mostrar: ")
-            
-            if biblioteca_elegida in bibliotecas:
-                bibliotecas[biblioteca_elegida].mostrar_libros()
-            else:
-                print("La biblioteca especificada no existe.")
+        biblioteca_elegida = seleccionar_biblioteca(bibliotecas, "Ingrese el nombre de la biblioteca que desea mostrar: ")
+        if biblioteca_elegida:
+            mostrar_libros_de_biblioteca(bibliotecas, biblioteca_elegida)
 
     elif opcion == "5":
         if not bibliotecas:
             print("No hay bibliotecas creadas.")
         else:
-            print("Bibliotecas disponibles:")
-            for nombre in bibliotecas.keys():
-                print(f'- {nombre}')
-            
-            biblioteca_elegida = input("Ingrese el nombre de la biblioteca: ")
-            
-            if biblioteca_elegida in bibliotecas:
+            biblioteca_elegida = seleccionar_biblioteca(bibliotecas)
+            if biblioteca_elegida:
                 print("Libros disponibles:")
                 bibliotecas[biblioteca_elegida].mostrar_libros()
                 titulo_libro = input("Ingrese el título del libro que desea marcar como leído: ")
-                libro_encontrado = None
-                for libro in bibliotecas[biblioteca_elegida].libros:
-                    if libro.titulo == titulo_libro:
-                        libro_encontrado = libro
-                        break
+                libro_encontrado = bibliotecas[biblioteca_elegida].buscar_libro(titulo_libro)
                 if libro_encontrado:
                     libro_encontrado.marcar_como_leido()
                     guardar_datos(ARCHIVO_DATOS, bibliotecas)
                 else:
                     print("El libro especificado no se encuentra en la biblioteca.")
-            else:
-                print("La biblioteca especificada no existe.")
     
     elif opcion == "6":
         if not bibliotecas:
             print("No hay bibliotecas creadas.")
         else:
-            print("Bibliotecas disponibles:")
-            for nombre in bibliotecas.keys():
-                print(f'- {nombre}')
-            
-            biblioteca_elegida = input("Ingrese el nombre de la biblioteca: ")
-            
-            if biblioteca_elegida in bibliotecas:
+            biblioteca_elegida = seleccionar_biblioteca(bibliotecas)
+            if biblioteca_elegida:
                 bibliotecas[biblioteca_elegida].mostrar_libros()
                 titulo_libro = input("Ingrese el título del libro que desea eliminar: ")
                 bibliotecas[biblioteca_elegida].eliminar_libro(titulo_libro)
                 guardar_datos(ARCHIVO_DATOS, bibliotecas)
-            else:
-                print("La biblioteca especificada no existe.")
     
     elif opcion == "7":
         if not bibliotecas:
             print("No hay bibliotecas creadas.")
         else:
-            print("Bibliotecas disponibles:")
-            for nombre in bibliotecas.keys():
-                print(f'- {nombre}')
-            
-            biblioteca_elegida = input("Ingrese el nombre de la biblioteca que desea eliminar: ")
-            
-            if biblioteca_elegida in bibliotecas:
+            biblioteca_elegida = seleccionar_biblioteca(bibliotecas, "Ingrese el nombre de la biblioteca que desea eliminar: ")
+            if biblioteca_elegida:
                 confirmacion = input(f"¿Está seguro de que desea eliminar la biblioteca '{biblioteca_elegida}'? (s/n): ")
                 if confirmacion.lower() == 's':
                     bibliotecas[biblioteca_elegida].eliminar_biblioteca()
@@ -264,8 +259,6 @@ while True:
                     guardar_datos(ARCHIVO_DATOS, bibliotecas)
                 else:
                     print("Eliminación cancelada.")
-            else:
-                print("La biblioteca especificada no existe.")
     
     elif opcion == "8":
         guardar_datos(ARCHIVO_DATOS, bibliotecas)
